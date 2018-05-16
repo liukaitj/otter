@@ -50,29 +50,32 @@ public class MysqlSqlTemplate extends AbstractSqlTemplate {
             sql.append("?").append((i + 1 < size) ? " , " : "");
         }
         sql.append(")");
-        sql.append(" on duplicate key update ");
-
-        size = columnNames.length;
-        for (int i = 0; i < size; i++) {
-            sql.append(appendEscape(columnNames[i]))
-                .append("=values(")
-                .append(appendEscape(columnNames[i]))
-                .append(")");
-            if (includePks) {
-                sql.append(" , ");
-            } else {
-                sql.append((i + 1 < size) ? " , " : "");
-            }
-        }
-
-        if (includePks) {
-            // mysql merge sql匹配了uniqe / primary key时都会执行update，所以需要更新pk信息
-            size = pkNames.length;
-            for (int i = 0; i < size; i++) {
-                sql.append(appendEscape(pkNames[i])).append("=values(").append(appendEscape(pkNames[i])).append(")");
-                sql.append((i + 1 < size) ? " , " : "");
-            }
-        }
+        
+        // [for-ads] 阿里云ADS支持变更：注释掉mergeSql中的on duplicate key update相关的Sql生成语句，
+        // 因为ADS的实时更新表默认即为on duplicate key update的更新方式。
+//        sql.append(" on duplicate key update ");
+//
+//        size = columnNames.length;
+//        for (int i = 0; i < size; i++) {
+//            sql.append(appendEscape(columnNames[i]))
+//                .append("=values(")
+//                .append(appendEscape(columnNames[i]))
+//                .append(")");
+//            if (includePks) {
+//                sql.append(" , ");
+//            } else {
+//                sql.append((i + 1 < size) ? " , " : "");
+//            }
+//        }
+//
+//        if (includePks) {
+//            // mysql merge sql匹配了uniqe / primary key时都会执行update，所以需要更新pk信息
+//            size = pkNames.length;
+//            for (int i = 0; i < size; i++) {
+//                sql.append(appendEscape(pkNames[i])).append("=values(").append(appendEscape(pkNames[i])).append(")");
+//                sql.append((i + 1 < size) ? " , " : "");
+//            }
+//        }
 
         return sql.toString().intern();// intern优化，避免出现大量相同的字符串
     }

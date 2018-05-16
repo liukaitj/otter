@@ -200,7 +200,11 @@ public class DBDataSourceService implements DataSourceService, DisposableBean {
                     dbcpDs.addConnectionProperty("characterEncoding", encoding);
                 }
             }
-            dbcpDs.setValidationQuery("select 1");
+            
+            // [for-ads] 阿里云ADS支持变更：目前（2018.5.8）ADS不支持 SELECT 1 语法，会报如下错误：
+            // ProcessId=xxxxx. SQL feature NOT supported yet: null (错误代码：42000-1236)
+//            dbcpDs.setValidationQuery("select 1");
+            dbcpDs.setValidationQuery("show tables");
         } else {
             logger.error("ERROR ## Unknow database type");
         }

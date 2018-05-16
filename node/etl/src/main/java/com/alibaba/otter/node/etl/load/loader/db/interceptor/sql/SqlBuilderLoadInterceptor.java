@@ -107,7 +107,14 @@ public class SqlBuilderLoadInterceptor extends AbstractLoadInterceptor<DbLoadCon
                     new String[] {},
                     !dbDialect.isDRDS());
             } else {// 否则进行update sql
-                sql = sqlTemplate.getUpdateSql(schemaName, currentData.getTableName(), keyColumns, otherColumns);
+                // [for-ads] 阿里云ADS支持变更：ADS不支持Update，全都改为MergeSql的Insert模式。
+//                sql = sqlTemplate.getUpdateSql(schemaName, currentData.getTableName(), keyColumns, otherColumns);
+                sql = sqlTemplate.getMergeSql(schemaName,
+                        currentData.getTableName(),
+                        keyColumns,
+                        otherColumns,
+                        new String[] {},
+                        !dbDialect.isDRDS());
             }
         } else if (type.isDelete()) {
             sql = sqlTemplate.getDeleteSql(schemaName,
